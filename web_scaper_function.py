@@ -1,0 +1,54 @@
+#personal code, didnt really work
+
+# import requests as req;
+# from bs4 import BeautifulSoup as bsoup
+import csv
+
+# URL = "https://www.dailysmarty.com/topics/python"
+# r = req.get(URL)
+
+# soup = bsoup(r.content, 'html5lib')
+
+# urls=[]
+   
+# table = soup.find('div', attrs = {'class':'post-item-wrapper'}) 
+   
+# for row in table.findAll('div', attrs = {'class':'post-link-title'}):
+#     quote = {}
+#     quote['url'] = row.h2.a['href']
+#     urls.append(quote)
+   
+   
+
+#Jordans code, works spectacularly
+
+import requests
+from bs4 import BeautifulSoup
+from inflection import titleize
+
+def title_generator(links):
+    titles = []
+
+    def post_formatter(url):
+        if 'posts' in url:
+            url = url.split('/')[-1]
+            url = url.replace('-', ' ')
+            url = titleize(url)
+            titles.append(url)
+
+    for link in links:
+        if link.get('href') == None:
+            continue
+        else:
+            post_formatter(link.get("href"))
+            
+    return titles
+
+
+r = requests.get('http://www.dailysmarty.com/topics/python')
+soup = BeautifulSoup(r.text, 'html.parser')
+links = soup.find_all('a')
+titles = title_generator(links)
+
+for title in titles:
+    print(title)
